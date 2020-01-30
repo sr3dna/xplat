@@ -55,6 +55,12 @@ export namespace ComponentHelpers {
     const chains: Array<any> = [prerun()];
     const componentSettings = XplatComponentHelpers.prepare(options);
 
+    let directory: string = "";
+    if (options && options.directory != null && options.directory !== "") {
+      directory = options.directory + "/";
+      console.log("***** packages.angular.src.utils.xplat.ts directory=" + directory);
+    }
+
     if (options.onlyProject) {
       for (const projectName of componentSettings.projectNames) {
         const projectParts = projectName.split('-');
@@ -62,7 +68,7 @@ export namespace ComponentHelpers {
         const platSuffix = projectParts.pop();
         if (platPrefix === platform || platSuffix === platform) {
           const appDir = platform === 'web' ? '/app' : '';
-          const prefixPath = `apps/${projectName}/src${appDir}`;
+          const prefixPath = `apps/${directory}${projectName}/src${appDir}`;
           const featurePath = `${prefixPath}/features/${componentSettings.featureName}`;
           const featureModulePath = `${featurePath}/${componentSettings.featureName}.module.ts`;
           const barrelIndex = `${featurePath}/components/index.ts`;

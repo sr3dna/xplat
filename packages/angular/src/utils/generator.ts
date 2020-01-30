@@ -97,6 +97,12 @@ export function generate(type: IGenerateType, options) {
     );
   }
 
+  let directory: string = "";
+  if (options && options.directory != null && options.directory !== "") {
+    directory = options.directory + "/";
+    console.log('**** generator.ts 103 *** ' + directory);
+  }
+
   const projectChains = [];
   if (options.projects) {
     for (const projectName of options.projects.split(',')) {
@@ -107,7 +113,8 @@ export function generate(type: IGenerateType, options) {
         ? projectNameParts[1]
         : projectNameParts[0];
       let appDir = platPrefix === 'web' ? '/app' : '';
-      const prefixPath = `apps/${projectName}/src${appDir}`;
+      const prefixPath = `apps/${directory}${projectName}/src${appDir}`;
+      console.log("**** prefix path " + prefixPath);
 
       let featurePath: string;
       if (shouldTargetCoreBarrel(type, featureName)) {
@@ -170,7 +177,7 @@ export function generate(type: IGenerateType, options) {
           );
         });
         projectChains.push((tree: Tree, context: SchematicContext) => {
-          return updatePackageForNgrx(tree, `apps/${projectName}/package.json`);
+          return updatePackageForNgrx(tree, `apps/${directory}${projectName}/package.json`);
         });
       } else {
         projectChains.push((tree: Tree, context: SchematicContext) => {

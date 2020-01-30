@@ -86,10 +86,12 @@ export namespace XplatElectrontHelpers {
   export function addNpmScripts(options: SchemaApp) {
     return (tree: Tree) => {
       const platformApp = options.name.replace('-', '.');
-      let fullTargetAppName = options.target;
+      let fullTargetAppName = options.target;      
       let targetAppScript = fullTargetAppName.replace('-', '.');
 
       const packageConfig = getJsonFromFile(tree, 'package.json');
+      const subfolder = options.directory && options.directory !== "" ? `${options.directory}/` : ''; 
+      console.log("***** addNpmScripts **** " + subfolder );
       const scripts = packageConfig.scripts || {};
       const postinstall = 'electron-rebuild install-app-deps';
       if (scripts.postinstall) {
@@ -117,11 +119,11 @@ export namespace XplatElectrontHelpers {
       ] = `npm run build.${platformApp} && cd dist/apps/${options.name} && npx electron-builder build --mac`;
       scripts[
         `prepare.${platformApp}`
-      ] = `npm run postinstall.electron && tsc -p apps/${options.name}/tsconfig.json`;
+      ] = `npm run postinstall.electron && tsc -p apps/${subfolder}${options.name}/tsconfig.json`;
       scripts[`serve.${platformApp}.target`] = `nx serve ${options.name}`;
       scripts[
         `serve.${platformApp}`
-      ] = `wait-on http-get://localhost:4200/ && electron apps/${options.name}/src --serve`;
+      ] = `wait-on http-get://localhost:4200/ && electron apps/${subfolder}${options.name}/src --serve`;
       scripts[
         `start.${platformApp}`
       ] = `npm run prepare.${platformApp} && npm-run-all -p serve.${platformApp}.target serve.${platformApp}`;

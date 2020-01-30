@@ -14,6 +14,7 @@ import {
   getWorkspacePath
 } from '@nrwl/workspace';
 
+
 export interface ITargetPlatforms {
   web?: boolean;
   nativescript?: boolean;
@@ -70,6 +71,7 @@ let frontendFramework: FrameworkTypes;
 // Group by app name (appname-platform) instead of the default (platform-appname)
 let groupByName = false;
 let isTest = false;
+let directory: string;
 
 export function getNpmScope() {
   return npmScope;
@@ -85,6 +87,10 @@ export function getFrontendFramework() {
 
 export function getGroupByName() {
   return groupByName;
+}
+
+export function getDirectory() {
+  return directory;
 }
 
 export function getAppName(options: any, platform: PlatformTypes) {
@@ -175,6 +181,7 @@ export interface IXplatSettings {
   groupByName?: boolean;
   framework?: FrameworkTypes;
   platforms?: string;
+  directory?: string;
 }
 
 export function prerun(options?: IXplatSettings | any, init?: boolean) {
@@ -196,6 +203,11 @@ export function prerun(options?: IXplatSettings | any, init?: boolean) {
       frameworkChoice = frameworks[0];
     }
     // console.log('frameworkChoice:', frameworkChoice);
+
+    if (options && options.directory != null && options.directory !== "") {
+      directory = options.directory;
+      console.log("*** directory is " + directory);
+    }
 
     if (packageJson) {
       prefix = '';

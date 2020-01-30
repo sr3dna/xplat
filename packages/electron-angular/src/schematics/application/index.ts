@@ -112,6 +112,11 @@ export default function(options: XplatElectrontHelpers.SchemaApp) {
 
       const projects = {};
       const electronAppName = options.name;
+      let directory: string = "";
+      if (options && options.directory != null && options.directory !== "") {
+        directory = options.directory + "/";
+      }
+
       projects[electronAppName] = targetConfig;
       // update to use electron module
       projects[
@@ -121,11 +126,11 @@ export default function(options: XplatElectrontHelpers.SchemaApp) {
       if (options.useXplat) {
         projects[
           electronAppName
-        ].architect.build.options.main = `apps/${fullTargetAppName}/src/main.electron.ts`;
+        ].architect.build.options.main = `apps/${directory}${fullTargetAppName}/src/main.electron.ts`;
       }
       projects[electronAppName].architect.build.options.assets.push({
         glob: '**/*',
-        input: `apps/${electronAppName}/src/`,
+        input: `apps/${directory}${electronAppName}/src/`,
         ignore: ['**/*.ts'],
         output: ''
       });
@@ -180,12 +185,13 @@ function addAppFiles(
 }
 
 function adjustAppFiles(options: XplatElectrontHelpers.SchemaApp, tree: Tree) {
+  const directory = options.directory ? `${options.directory}/` : '';
   const fullTargetAppName = options.target;
-  const electronModulePath = `/apps/${fullTargetAppName}/src/app/app.electron.module.ts`;
+  const electronModulePath = `/apps/${directory}${fullTargetAppName}/src/app/app.electron.module.ts`;
   if (!tree.exists(electronModulePath)) {
     tree.create(electronModulePath, electronModule());
   }
-  const electronMainPath = `/apps/${fullTargetAppName}/src/main.electron.ts`;
+  const electronMainPath = `/apps/${directory}${fullTargetAppName}/src/main.electron.ts`;
   if (!tree.exists(electronMainPath)) {
     tree.create(electronMainPath, electronMain());
   }

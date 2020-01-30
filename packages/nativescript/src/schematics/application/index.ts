@@ -43,6 +43,7 @@ export default function(options: Schema) {
   //   // always setup routing with sandbox
   //   options.routing = true;
   // }
+  const subfolder = options && options.directory && options.directory !== "" ? `${options.directory}/` : ''; 
 
   return chain([
     prerun(options),
@@ -58,7 +59,7 @@ export default function(options: Schema) {
         '@nstudio/nativescript',
         'app-resources',
         {
-          path: `apps/${options.name}`
+          path: `apps/${subfolder}${options.name}`
         },
         { interactive: false }
       )(tree, context),
@@ -91,7 +92,7 @@ export default function(options: Schema) {
     (tree: Tree) => {
       const scripts = {};
       const platformApp = options.name.replace('-', '.');
-      const directory = options.directory ? `${options.directory}/` : '';
+      const directory = options.directory && options.directory !== "" ? `${options.directory}/` : '';
       // standard apps don't have hmr on by default since results can vary
       // more reliable to leave off by default for now
       // however, sandbox setup due to its simplicity uses hmr by default
@@ -114,7 +115,7 @@ export default function(options: Schema) {
     },
     (tree: Tree, context: SchematicContext) => {
       const platformApp = options.name.replace('-', '.');
-      const directory = options.directory ? `${options.directory}/` : '';
+      const directory = options.directory && options.directory !== "" ? `${options.directory}/` : '';
       const projects = {};
       projects[`${options.name}`] = {
         root: `apps/${directory}${options.name}/`,

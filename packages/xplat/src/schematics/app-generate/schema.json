@@ -13,6 +13,11 @@
         "index": 0
       }
     },
+    "directory": {
+      "description": "The directory of the new app.",
+      "type": "string",
+      "x-prompt": "In which directory should the app be generated?"
+    },
     "prefix": {
       "type": "string",
       "description": "The prefix to apply to generated selectors.",

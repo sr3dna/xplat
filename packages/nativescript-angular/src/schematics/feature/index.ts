@@ -20,6 +20,7 @@ import {
 export default function(options: XplatFeatureHelpers.Schema) {
   const featureSettings = XplatFeatureHelpers.prepare(options);
   const chains = [];
+  const subfolder = options.directory && options.directory !== "" ? `${options.directory}/` : ''; 
 
   if (options.onlyProject) {
     for (const projectName of featureSettings.projectNames) {
@@ -29,7 +30,7 @@ export default function(options: XplatFeatureHelpers.Schema) {
       if (platPrefix === 'nativescript' || platSuffix === 'nativescript') {
         // check for 2 different naming conventions on routing modules
         const routingModulePathOptions = [];
-        const appDirectory = `apps/${projectName}/src/`;
+        const appDirectory = `apps/${subfolder}${projectName}/src/`;
         routingModulePathOptions.push(`${appDirectory}app.routing.ts`);
         routingModulePathOptions.push(`${appDirectory}app-routing.module.ts`);
 

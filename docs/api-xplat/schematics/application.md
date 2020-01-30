@@ -17,6 +17,12 @@ Type: `string`
 
 Frontend framework.
 
+### --directory
+
+Type: `string`
+
+The directory of the new app.
+
 ### --groupByName
 
 Default: `false`

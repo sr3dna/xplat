@@ -37,7 +37,8 @@ import {
   PlatformWithNxTypes,
   supportedNxExtraPlatforms,
   PlatformNxExtraTypes,
-  supportedPlatformsWithNx
+  supportedPlatformsWithNx,
+  getDirectory
 } from './general';
 import {
   updateJsonInTree,
@@ -126,6 +127,10 @@ export namespace XplatHelpers {
      * testing helper
      */
     isTesting?: boolean;
+    /**
+     * Directory name
+     */
+    directory?: string;
   }
 
   export interface NgAddSchema {
@@ -236,6 +241,10 @@ export namespace XplatHelpers {
     const xplatSettings: IXplatSettings = {
       prefix: getPrefix()
     };
+    if (options && options.directory && options.directory !== "") {
+      console.log('**** Directory = ' + options.directory);
+      xplatSettings.directory = options.directory;
+    }
 
     if (frameworkChoice && frameworks.length === 1) {
       // when only 1 framework is specified, auto add as default
@@ -859,6 +868,7 @@ xplat/**/*.ngsummary.json
         // console.log('workspace dir:', process.cwd());
         // const dirName = process.cwd().split('/').slice(-1);
         const groupByName = getGroupByName();
+        const directory = getDirectory();
         const framework = getFrontendFramework();
         let frameworkSuffix: string = framework ? `-${framework}` : '';
 
@@ -871,7 +881,8 @@ xplat/**/*.ngsummary.json
           isFullstack = true;
           for (const p of supportedPlatformsWithNx) {
             const appFilter = groupByName ? `*-${p}` : `${p}*`;
-            userUpdates[`**/apps/${appFilter}`] = false;
+            const subfolder = directory && directory !== "" ? `${directory}/` : '';
+            userUpdates[`**/apps/${subfolder}${appFilter}`] = false;
             userUpdates[`**/xplat/${p}`] = false;
             if (frameworkSuffix) {
               userUpdates[`**/xplat/${p}${frameworkSuffix}`] = false;
@@ -883,13 +894,14 @@ xplat/**/*.ngsummary.json
           for (const p of supportedPlatformsWithNx) {
             const excluded = platforms.includes(p) ? false : true;
             const appFilter = groupByName ? `*-${p}` : `${p}*`;
+            const subfolder = directory && directory !== "" ? `${directory}/` : '';
             if (focusOnApps.length) {
               // focusing on apps
               // fill up wildcards to use below (we will clear all app wildcards when focusing on apps)
-              appWildcards.push(`**/apps/${appFilter}`);
+              appWildcards.push(`**/apps/${subfolder}${appFilter}`);
             } else {
               // use wildcards for apps only if no project names were specified
-              userUpdates[`**/apps/${appFilter}`] = excluded;
+              userUpdates[`**/apps/${subfolder}${appFilter}`] = excluded;
             }
             userUpdates[`**/xplat/${p}`] = excluded;
             if (frameworkSuffix) {
@@ -1252,6 +1264,7 @@ xplat/**/*.ngsummary.json
 export namespace XplatComponentHelpers {
   export interface Schema {
     name: string;
+    directory?: string;
     /**
      * Target feature. Default is 'ui' if none specified.
      */
@@ -1354,6 +1367,7 @@ export namespace XplatComponentHelpers {
 export namespace XplatFeatureHelpers {
   export interface Schema {
     name: string;
+    directory?: string;
     /**
      * Target apps
      */
